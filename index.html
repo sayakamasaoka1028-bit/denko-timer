@@ -97,7 +97,7 @@
           "
         />
       </div>
-
+      <h3>⏳ 残り時間</h3>
       <div id="timer">40:00</div>
 
       <button class="start" onclick="startTimer()">▶ 開始</button>
@@ -164,7 +164,6 @@
           const elapsed = Math.floor((Date.now() - startTime) / 1000);
 
           console.log(elapsed);
-          seconds--;
           seconds = Math.max(0, TOTAL - elapsed);
 
           updateDisplay();
