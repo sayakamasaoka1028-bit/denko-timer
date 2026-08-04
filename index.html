@@ -114,17 +114,23 @@
 
       <hr />
 
-      <h3>🏆 BEST</h3>
+      <h3>🏆 全体BEST</h3>
       <div id="best">--:--</div>
 
-      <h3>📊 AVG</h3>
+      <h3>📊 全体AVG</h3>
       <div id="avg">--:--</div>
 
       <h3>🔥 練習回数</h3>
       <div id="count">0</div>
 
       <hr />
+      <hr />
 
+      <h3>📊 問題別分析</h3>
+
+      <div id="analysis"></div>
+
+      <hr />
       <h3>履歴</h3>
       <div id="history"></div>
     </div>
@@ -317,6 +323,51 @@
           });
 
         document.getElementById("history").innerHTML = html;
+        // ← この1行を追加
+        updateAnalysis(records);
+      }
+      function updateAnalysis(records) {
+        let html = "";
+
+        for (let i = 1; i <= 13; i++) {
+          // No.i のデータだけ集める
+          let noRecords = records.filter((r) => r.no == i);
+
+          // 練習回数
+          let count = noRecords.length;
+
+          // ベストタイム
+          let best = "--:--";
+
+          if (count > 0) {
+            best = formatTime(Math.min(...noRecords.map((r) => r.seconds)));
+          }
+
+          // 平均タイム
+          let avg = "--:--";
+
+          if (count > 0) {
+            let total = noRecords.reduce((sum, r) => sum + r.seconds, 0);
+
+            avg = formatTime(Math.floor(total / count));
+          }
+
+          html += `
+        <div style="
+            margin-bottom:16px;
+            padding:10px;
+            border:1px solid #666;
+            border-radius:10px;
+        ">
+            <strong>📘 No.${i}</strong><br>
+            🏆 BEST：${best}<br>
+            📈 AVG ：${avg}<br>
+            🔥 練習：${count}回
+        </div>
+        `;
+        }
+
+        document.getElementById("analysis").innerHTML = html;
       }
 
       function formatTime(sec) {
