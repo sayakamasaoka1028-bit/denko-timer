@@ -128,12 +128,25 @@
 
       <h3>📊 問題別分析</h3>
 
+      <h4>⚠️ 苦手ランキング</h4>
+      <div id="weakRanking"></div>
+
+      <h4>🥇 得意ランキング</h4>
+      <div id="strongRanking"></div>
+
+      <hr />
+
       <div id="analysis"></div>
 
       <hr />
       <h3>履歴</h3>
       <div id="history"></div>
-    </div>
+    <hr />
+
+<div class="footer">
+  ⚡ Developed by <strong>Sayaka Wakiyama</strong><br>
+  Version 5.0
+</div>
 
     <script>
       const TOTAL = 40 * 60;
@@ -325,6 +338,7 @@
         document.getElementById("history").innerHTML = html;
         // ← この1行を追加
         updateAnalysis(records);
+        updateRanking(records);
       }
       function updateAnalysis(records) {
         let html = "";
@@ -376,7 +390,54 @@
 
         return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
       }
+      function updateRanking(records) {
+        let result = [];
 
+        // No.1～13の平均タイムを計算
+        for (let i = 1; i <= 13; i++) {
+          let noRecords = records.filter((r) => r.no == i);
+
+          if (noRecords.length === 0) {
+            continue;
+          }
+
+          let total = noRecords.reduce((sum, r) => sum + r.seconds, 0);
+
+          let avg = total / noRecords.length;
+
+          result.push({
+            no: i,
+            avg: avg,
+          });
+        }
+
+        // 得意ランキング（平均が速い順）
+        let strong = [...result].sort((a, b) => a.avg - b.avg);
+
+        // 苦手ランキング（平均が遅い順）
+        let weak = [...result].sort((a, b) => b.avg - a.avg);
+
+        let strongHtml = "";
+
+        strong.slice(0, 3).forEach((r, index) => {
+          strongHtml += `
+        ${index + 1}位　No.${r.no}
+        （${formatTime(Math.floor(r.avg))}）<br>
+        `;
+        });
+
+        let weakHtml = "";
+
+        weak.slice(0, 3).forEach((r, index) => {
+          weakHtml += `
+        ${index + 1}位　No.${r.no}
+        （${formatTime(Math.floor(r.avg))}）<br>
+        `;
+        });
+
+        document.getElementById("strongRanking").innerHTML = strongHtml;
+        document.getElementById("weakRanking").innerHTML = weakHtml;
+      }
       loadRecords();
       updateDisplay();
     </script>
