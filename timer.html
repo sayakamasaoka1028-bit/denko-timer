@@ -194,6 +194,7 @@
         clearInterval(interval);
 
         started = false;
+        startTime = null;
         seconds = TOTAL;
 
         const timer = document.getElementById("timer");
@@ -272,6 +273,8 @@
         }
 
         alert(message);
+        // タイマーを初期状態に戻す
+        resetTimer();
       }
 
       function loadRecords() {
