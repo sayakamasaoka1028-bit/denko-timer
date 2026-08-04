@@ -7,16 +7,13 @@
 <style>
 body{
     margin:0;
-    min-height:100vh;
+    height:100vh;
     display:flex;
     justify-content:center;
-    align-items:flex-start;
-    overflow-y:auto;
-    padding:20px 0;
+    align-items:center;
     background:linear-gradient(135deg,#0f172a,#1e293b);
     font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
-
 
 .card{
     width:500px;
@@ -72,16 +69,6 @@ button:hover{
     font-size:20px;
     opacity:.9;
 }
-
-#historyBox{
-    max-height:250px;
-    overflow-y:auto;
-    border:1px solid rgba(255,255,255,.2);
-    border-radius:15px;
-    padding:10px;
-    margin-top:10px;
-}
-
 </style>
 </head>
 
@@ -111,14 +98,7 @@ border:none;
 ">
 </div>
 
-<h3>⏳ 残り時間</h3>
-
 <div id="timer">40:00</div>
-
-<div class="info">
-🎯 目標：30分以内完成
-</div>
-
 
 
 <button class="start" onclick="startTimer()">
@@ -141,7 +121,9 @@ border:none;
 🗑 最新削除
 </button>
 
-
+<div class="info">
+目標：30分以内完成🔥
+</div>
 
 <hr>
 
@@ -157,13 +139,9 @@ border:none;
 <hr>
 
 <h3>履歴</h3>
+<div id="history"></div>
 
-<div id="historyBox">
-    <div id="history"></div>
 </div>
-
-
-
 
 <script>
 
@@ -202,6 +180,13 @@ function startTimer(){
 
         updateDisplay();
 
+        if(seconds === 1200){
+            alert("⚠️ 半分経過しました");
+        }
+
+        if(seconds === 300){
+            alert("🚨 残り5分！");
+        }
 
         if(seconds <= 0){
             clearInterval(interval);
