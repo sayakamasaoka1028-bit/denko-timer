@@ -91,6 +91,14 @@
       </a>
 
       <a class="back" href="questions.html">⬅ 戻る</a>
+      <a
+        id="analysisLink"
+        class="back"
+        href="#"
+        style="display: none; margin-right: 15px"
+      >
+        🤖 AI分析を見る
+      </a>
     </div>
 
     <script src="prefectures.js"></script>
@@ -192,14 +200,21 @@
 
         document.getElementById("history").innerHTML = html;
 
-        // ← この位置に入れる
+        // ヒートマップのリンク更新
         const heatmapLink = document.getElementById("heatmapLink");
+        const analysisLink = document.getElementById("analysisLink");
 
         if (pref) {
-          heatmapLink.href = `heatmap.html?pref=${encodeURIComponent(pref)}`;
+          // 📊 ヒートマップ
+          heatmapLink.href = `heatmap.html?region=${region}&pref=${encodeURIComponent(pref)}`;
           heatmapLink.style.display = "inline-block";
+
+          // 🤖 AI分析
+          analysisLink.href = `analysis.html?region=${region}&pref=${encodeURIComponent(pref)}`;
+          analysisLink.style.display = "inline-block";
         } else {
           heatmapLink.style.display = "none";
+          analysisLink.style.display = "none";
         }
       }
     </script>

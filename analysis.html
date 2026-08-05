@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>🤖 AI分析</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 30px;
+        background: #0f172a;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 25px;
+      }
+
+      .card {
+        background: #1e293b;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        color: #60a5fa;
+        margin-top: 30px;
+      }
+
+      ul {
+        line-height: 2;
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 20px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        margin-right: 10px;
+      }
+
+      .back:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 id="title">🤖 AI分析</h1>
+
+      <div class="card">
+        <h2>📈 出題回数ランキング</h2>
+
+        <ul id="ranking"></ul>
+
+        <h2>✅ 出題済み候補問題</h2>
+
+        <p id="appeared"></p>
+
+        <h2>⭕ 未出題候補問題</h2>
+
+        <p id="notAppeared"></p>
+
+        <h2>🤖 AI分析</h2>
+
+        <div id="analysis"></div>
+      </div>
+
+      <div style="text-align: center">
+        <a id="heatmapLink" class="back" href="#"> 📊 ヒートマップへ戻る </a>
+
+        <a class="back" href="javascript:history.back()"> ⬅ 戻る </a>
+      </div>
+    </div>
+
+    <script src="prefectures.js"></script>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+
+      console.log(location.href);
+      console.log(params.get("region"));
+      console.log(params.get("pref"));
+
+      const pref = params.get("pref");
+
+      document.getElementById("title").textContent = `🤖 ${pref} AI分析`;
+
+      document.getElementById("heatmapLink").href =
+        `heatmap.html?pref=${encodeURIComponent(pref)}`;
+
+      const records = prefectureData[pref] || [];
+
+      const count = {};
+
+      records.forEach((record) => {
+        if (record[1] === "--") return;
+
+        record[1]
+          .split(",")
+          .map((n) => n.trim())
+          .forEach((number) => {
+            count[number] = (count[number] || 0) + 1;
+          });
+      });
+
+      const ranking = Object.entries(count).sort((a, b) => b[1] - a[1]);
+
+      let rankingHTML = "";
+
+      ranking.forEach((item, index) => {
+        let medal = "🔹";
+
+        if (index === 0) medal = "🥇";
+        if (index === 1) medal = "🥈";
+        if (index === 2) medal = "🥉";
+
+        rankingHTML += `
+    <li>${medal} 候補問題 ${item[0]}（${item[1]}回）</li>
+    `;
+      });
+
+      document.getElementById("ranking").innerHTML = rankingHTML;
+
+      const appeared = ranking.map((r) => Number(r[0])).sort((a, b) => a - b);
+
+      document.getElementById("appeared").textContent = appeared
+        .map((n) => `問題${n}`)
+        .join("　");
+
+      const notAppeared = [];
+
+      for (let i = 1; i <= 13; i++) {
+        if (!appeared.includes(i)) {
+          notAppeared.push(i);
+        }
+      }
+
+      document.getElementById("notAppeared").textContent = notAppeared
+        .map((n) => `問題${n}`)
+        .join("　");
+
+      let comment = "";
+
+      if (ranking.length) {
+        const top = ranking[0];
+
+        comment = `
+<p>
+<strong>${pref}</strong>では、
+最も多く出題されているのは
+<strong>候補問題${top[0]}</strong>で、
+<strong>${top[1]}回</strong>出題されています。
+</p>
+
+<p>
+頻出問題を重点的に復習しながら、
+未出題の候補問題もバランスよく学習することをおすすめします。
+</p>
+
+<p>
+過去の出題傾向は参考になりますが、
+試験ではどの候補問題も出題される可能性があります。
+幅広く対策して合格を目指しましょう！💪
+</p>
+`;
+      } else {
+        comment = "<p>分析できるデータがありません。</p>";
+      }
+
+      document.getElementById("analysis").innerHTML = comment;
+    </script>
+  </body>
+</html>

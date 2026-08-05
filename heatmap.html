@@ -81,8 +81,12 @@
 
       <table id="heatmap"></table>
 
-      <div style="text-align: center">
-        <a class="back" href="javascript:history.back()"> ⬅ 戻る </a>
+      <div style="text-align: center; margin-top: 20px">
+        <a id="analysisLink" class="back" href="#" style="margin-right: 15px">
+          🤖 AI分析を見る
+        </a>
+
+        <a id="backLink" class="back" href="#"> ⬅ 戻る </a>
       </div>
     </div>
 
@@ -92,6 +96,14 @@
       const params = new URLSearchParams(location.search);
 
       const pref = params.get("pref");
+
+      const region = params.get("region");
+
+      document.getElementById("analysisLink").href =
+        `analysis.html?region=${region}&pref=${encodeURIComponent(pref)}`;
+
+      document.getElementById("backLink").href =
+        `prefectures.html?region=${region}`;
 
       document.getElementById("title").textContent =
         `📊 ${pref} 出題ヒートマップ`;
