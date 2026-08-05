@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>📊 出題ヒートマップ</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 30px;
+        background: #0f172a;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      table {
+        border-collapse: collapse;
+        margin: auto;
+        background: white;
+        color: black;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        width: 36px;
+        height: 36px;
+        text-align: center;
+        font-size: 14px;
+        padding: 4px;
+      }
+
+      th {
+        background: #334155;
+        color: white;
+      }
+
+      .cell {
+        width: 20px;
+        height: 20px;
+        margin: auto;
+        background: #e5e7eb; /* 出題なし */
+        border-radius: 4px;
+      }
+
+      .hit {
+        background: #2563eb; /* 出題あり */
+      }
+
+      .back {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 12px 20px;
+        background: #2563eb;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+      }
+
+      .back:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 id="title">📊 出題ヒートマップ</h1>
+
+      <table id="heatmap"></table>
+
+      <div style="text-align: center">
+        <a class="back" href="javascript:history.back()"> ⬅ 戻る </a>
+      </div>
+    </div>
+
+    <script src="prefectures.js"></script>
+
+    <script>
+      const params = new URLSearchParams(location.search);
+
+      const pref = params.get("pref");
+
+      document.getElementById("title").textContent =
+        `📊 ${pref} 出題ヒートマップ`;
+
+      const data = prefectureData[pref] || [];
+
+      const exams = data.map((r) => r[0]);
+
+      let html = "<tr><th>候補問題</th>";
+
+      exams.forEach((exam) => {
+        html += `<th>${exam}</th>`;
+      });
+
+      html += "</tr>";
+
+      for (let q = 13; q >= 1; q--) {
+        html += `<tr><th>${q}</th>`;
+
+        data.forEach((row) => {
+          const numbers = row[1]
+            .replace(/--/g, "")
+            .split(",")
+            .map((n) => n.trim());
+
+          if (numbers.includes(String(q))) {
+            html += `<td><div class="cell hit"></div></td>`;
+          } else {
+            html += `<td><div class="cell"></div></td>`;
+          }
+        });
+
+        html += "</tr>";
+      }
+
+      document.getElementById("heatmap").innerHTML = html;
+    </script>
+  </body>
+</html>

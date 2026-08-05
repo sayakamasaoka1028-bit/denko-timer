@@ -81,8 +81,16 @@
           </tr>
         </tbody>
       </table>
+      <a
+        id="heatmapLink"
+        class="back"
+        href="#"
+        style="display: none; margin-right: 15px"
+      >
+        📊 ヒートマップを見る
+      </a>
 
-      <a class="back" href="questions.html"> ⬅ 戻る </a>
+      <a class="back" href="questions.html">⬅ 戻る</a>
     </div>
 
     <script src="prefectures.js"></script>
@@ -167,22 +175,32 @@
 
         if (!records || records.length === 0) {
           html = `
-        <tr>
-            <td colspan="2">データ準備中</td>
-        </tr>
-        `;
+      <tr>
+        <td colspan="2">データ準備中</td>
+      </tr>
+    `;
         } else {
           records.forEach((record) => {
             html += `
-            <tr>
-                <td>${record[0]}</td>
-                <td>${record[1]}</td>
-            </tr>
-            `;
+        <tr>
+          <td>${record[0]}</td>
+          <td>${record[1]}</td>
+        </tr>
+      `;
           });
         }
 
         document.getElementById("history").innerHTML = html;
+
+        // ← この位置に入れる
+        const heatmapLink = document.getElementById("heatmapLink");
+
+        if (pref) {
+          heatmapLink.href = `heatmap.html?pref=${encodeURIComponent(pref)}`;
+          heatmapLink.style.display = "inline-block";
+        } else {
+          heatmapLink.style.display = "none";
+        }
       }
     </script>
   </body>
