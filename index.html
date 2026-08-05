@@ -138,11 +138,8 @@
 
       <h3>📊 問題別分析</h3>
 
-      <h4>⚠️ 苦手ランキング</h4>
-      <div id="weakRanking"></div>
-
-      <h4>🥇 得意ランキング</h4>
-      <div id="strongRanking"></div>
+     <h4>📊 ランキング</h4>
+<div id="ranking"></div>
 
       <hr />
 
@@ -257,6 +254,11 @@
 
         let used = TOTAL - seconds;
 
+        if (used === 0) {
+
+        alert("タイマーを開始してから完成してください。");
+    return;
+  }
         let m = Math.floor(used / 60);
         let s = used % 60;
 
@@ -401,6 +403,38 @@
         return String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
       }
       function updateRanking(records) {
+   // 練習済みの問題番号
+  let practiced = [];
+
+  for (let i = 1; i <= 13; i++) {
+    let noRecords = records.filter((r) => r.no == i);
+
+    if (noRecords.length > 0) {
+      practiced.push(i);
+    }
+  }
+
+  // ← この部分を追加
+  if (practiced.length < 13) {
+
+  let notPracticed = [];
+
+  for (let i = 1; i <= 13; i++) {
+    if (!practiced.includes(i)) {
+      notPracticed.push("No." + i);
+    }
+  }
+
+  const message =
+    `⚠️ 全13候補問題を1回以上練習するとランキングを表示します。<br><br>
+     現在：${practiced.length} / 13問<br>
+     未実施：${notPracticed.join("、")}`;
+
+  document.getElementById("ranking").innerHTML = message;
+
+  return;
+}
+
         let result = [];
 
         // No.1～13の平均タイムを計算
@@ -445,9 +479,14 @@
         `;
         });
 
-        document.getElementById("strongRanking").innerHTML = strongHtml;
-        document.getElementById("weakRanking").innerHTML = weakHtml;
-      }
+        document.getElementById("ranking").innerHTML = `
+<h4>⚠️ 苦手ランキング</h4>
+${weakHtml}
+
+<h4>🥇 得意ランキング</h4>
+${strongHtml}
+`;
+       }
       loadRecords();
       updateDisplay();
     </script>
